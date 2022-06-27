@@ -1,0 +1,4 @@
+repository "ClawCrane@kunse@cloud"
+  path "/"
+    br "/main"
+    co "/main"
