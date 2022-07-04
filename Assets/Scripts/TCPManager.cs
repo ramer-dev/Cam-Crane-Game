@@ -15,12 +15,13 @@ public class TCPManager : MonoBehaviour
     StreamReader reader;
     bool socketReady = false;
     NetworkStream stream;
-
+    public int action;
 
     // Start is called before the first frame update
     void Start()
     {
         CheckReceive();
+        action = 0;
     }
 
     // Update is called once per frame
@@ -34,9 +35,20 @@ public class TCPManager : MonoBehaviour
             if (stream.DataAvailable)
             {
                 receivedBuffer = new byte[100];
-                stream.Read(receivedBuffer, 0, receivedBuffer.Length); // stream에 있던 바이트배열 내려서 새로 선언한 바이트배열에 넣기
+                stream.Read(receivedBuffer, 0, receivedBuffer.Length); 
                 string msg = Encoding.UTF8.GetString(receivedBuffer, 0, receivedBuffer.Length); // byte[] to string
-                Debug.Log(msg);
+                
+                Debug.Log((int)msg[0]);
+                switch ((int)msg[0])
+                {
+                    case 117 : action = 1;  break;
+                    case 114: action = 2;  break;
+                    case 100 : action = 3;  break;
+                    case 108: action = 4; break;
+                    case 99 : action = 9; break;
+                    case 111 : action = 0;  break;
+                }
+
             }
 
         }

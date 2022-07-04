@@ -9,11 +9,9 @@ public class Controller : MonoBehaviour
     private Vector3 moveDir;
     public Animator animator;
     public Crane crane;
-
+    public TCPManager tcp;
     bool isPicking = false;
     bool isMoving = false;
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -28,22 +26,60 @@ public class Controller : MonoBehaviour
     {
         if (rigid == null) return;
 
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        // float x = Input.GetAxis("Horizontal");
+        // float z = Input.GetAxis("Vertical");
         
-        moveDir = new Vector3(x, 0, z);
-        moveDir *= speed;
-
+        // moveDir = new Vector3(x, 0, z);
+        // moveDir *= speed;
         if (Input.GetKey(KeyCode.Space))
         {
+            craneDown();
+        } 
+
+        Debug.Log(tcp.action);
+        
+        switch (tcp.action)
+                {
+                    case 1 : moveNorth();  break;
+                    case 2: moveRight();  break;
+                    case 3 : moveSouth();  break;
+                    case 4: moveLeft(); break;
+                    case 9 : craneDown(); break;
+                    default : moveStop();  break;
+                }
+        
+    }
+
+    public void moveLeft() {
+        moveDir = new Vector3(-1, 0, 0);
+        moveDir *= speed;
+    }
+
+    public void moveRight() {
+        moveDir = new Vector3(1, 0, 0);
+        moveDir *= speed;
+    }
+
+    public void moveNorth() {
+        moveDir = new Vector3(0, 0, 1);
+        moveDir *= speed;
+    }
+
+    public void moveSouth() {
+        moveDir = new Vector3(0, 0, -1);
+        moveDir *= speed;
+    }
+
+    public void moveStop() {
+        moveDir = Vector3.zero;
+    }
+
+    public void craneDown(){
             animator.enabled = true;
             animator.SetBool("Pick",true);
             Invoke("moveDown",1);
             Invoke("deactivate",4);
-        }
-        
     }
-
 
     void moveDown() {
         rigid.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX;
